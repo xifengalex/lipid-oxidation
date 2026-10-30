@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Photooxidation: Type I vs Type II Sensitizers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f8fb;--surface:#fff;--ink:#14213d;--muted:#55627a;--line:#d6dde8;--t1:#c2410c;--t1bg:#fff1e8;--t2:#0f766e;--t2bg:#e6f6f3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--surface:#17213a;--ink:#e8edf6;--muted:#a3b0c7;--line:#2b3956;--t1:#fb923c;--t1bg:#2e1f19;--t2:#2dd4bf;--t2bg:#12302e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1624;--surface:#17213a;--ink:#e8edf6;--muted:#a3b0c7;--line:#2b3956;--t1:#fb923c;--t1bg:#2e1f19;--t2:#2dd4bf;--t2bg:#12302e;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "Source Sans 3",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0}
+main{max-width:980px;margin:0 auto;padding:40px 20px 64px}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;max-width:16 em}
+.lead{color:var(--muted);max-width:62ch;margin:14px 0 0}
+section{margin-top:56px}
+h2{font-size:1.6rem;margin-bottom:6px}
+.sub{color:var(--muted);margin:0 0 20px;max-width:62ch}
+.ground{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-top:32px}
+.ground p{margin:6px 0 0;max-width:70ch}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-top-width:6px;border-radius:10px;padding:20px 22px}
+.card.t1{border-top-color:var(--t1)}.card.t2{border-top-color:var(--t2)}
+.card h3{font-size:1.35rem}.t1 h3{color:var(--t1)}.t2 h3{color:var(--t2)}
+.card ul{padding-left:20px;margin:12px 0 0}.card li{margin:6px 0}
+.tag{display:inline-block;font-size:.85rem;font-weight:600;border-radius:99px;padding:2px 10px;margin-top:10px}
+.t1 .tag{background:var(--t1bg);color:var(--t1)}.t2 .tag{background:var(--t2bg);color:var(--t2)}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{font:600 1rem "Source Sans 3",sans-serif;padding:9px 18px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"].b1{background:var(--t1);border-color:var(--t1);color:#fff}
+.tabs button[aria-selected="true"].b2{background:var(--t2);border-color:var(--t2);color:#fff}
+@media (prefers-color-scheme:dark){.tabs button[aria-selected="true"]{color:#0f1624!important}}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.path{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 22px 22px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);opacity:.35;transition:opacity .25s}
+.step:last-of-type{border-bottom:0}
+.step.on{opacity:1}.step.done{opacity:.7}
+.dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;border:2px solid var(--accent);color:var(--accent)}
+.step.on .dot{background:var(--accent);color:var(--bg)}
+.eq{font:600 1.15rem "Source Sans 3",sans-serif;color:var(--accent);overflow-x:auto;white-space:nowrap}
+.step p{margin:4px 0 0;color:var(--muted)}
+.ctrl{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.ctrl button{font:600 1rem "Source Sans 3",sans-serif;padding:8px 16px;border-radius:8px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.ctrl button.primary{background:var(--accent);color:var(--bg)}
+.note{margin-top:14px;padding:12px 16px;border-radius:8px;background:var(--bg);border-left:4px solid var(--accent);display:none}
+.note.show{display:block}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:"Bricolage Grotesque",sans-serif}
+th.c1{color:var(--t1)}th.c2{color:var(--t2)}
+td:first-child{font-weight:600;width:24%}
+.take{background:var(--t2bg);border-radius:10px;padding:20px 22px;border:1px solid var(--line)}
+.take p{margin:0;max-width:70ch}
+sup,sub{line-height:0}
+@media (max-width:700px){.cols{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.step{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>Photooxidation: how light starts lipid oxidation</h1>
+<p class="lead">Light can start lipid oxidation without any help from heat or metals, but only if a sensitizer is present. The sensitizer can do this in two ways: Type I and Type II.</p>
+
+<div class="ground">
+<h3>First, the oxygen problem</h3>
+<p>Ordinary oxygen is <b>triplet oxygen (<sup>3</sup>O<sub>2</sub>)</b>, the ground state. It has 8 protons and 8 electrons, two of which are unpaired with parallel spins, and it is nearly inert toward unsaturated fatty acids. <b>Singlet oxygen (<sup>1</sup>O<sub>2</sub>)</b> is the excited state, and it is about <b>1500 times more reactive</b> with unsaturated fatty acids. It can add directly to a –C=C– double bond. Making singlet oxygen needs a sensitizer such as chlorophyll or riboflavin.</p>
+</div>
+
+<section>
+<h2>Two routes, same end product</h2>
+<p class="sub">A sensitizer absorbs light and becomes excited. What it does next defines the type.</p>
+<div class="cols">
+<div class="card t1">
+<h3>Type I sensitizer</h3>
+<span class="tag">Reacts with the fatty acid</span>
+<ul>
+<li>The excited sensitizer reacts <b>directly with unsaturated fatty acids</b>.</li>
+<li>Sensitizers: chlorophyll, myoglobin, riboflavin.</li>
+<li>It abstracts a hydrogen, which <b>initiates</b> lipid oxidation.</li>
+<li>Produces the same lipid hydroperoxides seen in the propagation step.</li>
+<li>Radical chemistry, so it has an <b>induction period</b>.</li>
+</ul>
+</div>
+<div class="card t2">
+<h3>Type II sensitizer</h3>
+<span class="tag">Reacts with oxygen</span>
+<ul>
+<li>The excited sensitizer <b>activates oxygen</b> to singlet state.</li>
+<li>Singlet oxygen then adds directly to the double bond.</li>
+<li>The double bond shifts to <i>trans</i>.</li>
+<li><b>No free radicals</b> and <b>no induction period</b>.</li>
+<li><b>Most common</b> photooxidation route.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<h2>Walk through each pathway</h2>
+<p class="sub">Choose a type, then step through the reaction.</p>
+<div class="tabs" role="tablist">
+<button class="b1" role="tab" aria-selected="true" data-t="1">Type I</button>
+<button class="b2" role="tab" aria-selected="false" data-t="2">Type II</button>
+</div>
+<div class="path" id="path"></div>
+</section>
+
+<section>
+<h2>Side by side</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th></th><th class="c1">Type I</th><th class="c2">Type II</th></tr></thead>
+<tbody>
+<tr><td>Sensitizer partner</td><td>Unsaturated fatty acid (substrate)</td><td>Oxygen (<sup>3</sup>O<sub>2</sub>)</td></tr>
+<tr><td>Key reactive species</td><td>Excited triplet-state sensitizer</td><td>Singlet oxygen (<sup>1</sup>O<sub>2</sub>)</td></tr>
+<tr><td>How it attacks lipid</td><td>Abstracts a hydrogen from the fatty acid</td><td>Adds directly to the double bond</td></tr>
+<tr><td>Free radicals</td><td>Yes: initiates the radical chain</td><td>No</td></tr>
+<tr><td>Induction period</td><td>Yes</td><td>None</td></tr>
+<tr><td>Double bond</td><td>Not specified in the slides</td><td>Shifts to <i>trans</i></td></tr>
+<tr><td>Product</td><td>Lipid hydroperoxides (ROOH)</td><td>Lipid hydroperoxides (ROOH)</td></tr>
+<tr><td>How common</td><td>Less common</td><td>Most common</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<div class="take">
+<h3>Takeaway</h3>
+<p>Both types need light and a sensitizer, and both end with lipid hydroperoxides. Type I goes straight at the fatty acid and starts a radical chain. Type II turns oxygen into the far more reactive singlet form, which reacts without radicals and without a delay.</p>
+</div>
+</section>
+</main>
+
+<script>
+var D={
+1:{c:"var(--t1)",steps:[
+{e:"sen + light → <sup>1</sup>sen*",d:"The sensitizer (chlorophyll, myoglobin or riboflavin) absorbs light and forms an excited singlet state."},
+{e:"<sup>1</sup>sen* → <sup>3</sup>sen*",d:"The singlet state is converted to the excited triplet state."},
+{e:"<sup>3</sup>sen* + RH → sen–H• + R•",d:"The triplet sensitizer reacts directly with an unsaturated fatty acid and abstracts a hydrogen. This initiates lipid oxidation.",n:"Because a free radical (R•) forms, a radical chain begins and there is an induction period."},
+{e:"R• → … → ROOH",d:"The chain produces the same lipid hydroperoxides seen in the propagation step."}]},
+2:{c:"var(--t2)",steps:[
+{e:"sen + energy → sen*",d:"The sensitizer absorbs light energy and becomes excited."},
+{e:"sen* + <sup>3</sup>O<sub>2</sub> → sen + <sup>1</sup>O<sub>2</sub>",d:"The excited sensitizer passes its energy to ground-state oxygen and makes singlet oxygen. The sensitizer returns to its ground state.",n:"The sensitizer is not used up. It can repeat this step."},
+{e:"<sup>1</sup>O<sub>2</sub> + RH → ROOH",d:"Singlet oxygen adds directly to the double bond (about 1500 times faster than triplet oxygen). The double bond shifts to trans.",n:"No free radicals form and there is no induction period."}]}};
+var type=1,at=0,box=document.getElementById("path");
+function draw(){
+var s=D[type].steps,h="";
+s.forEach(function(x,i){
+h+='<div class="step '+(i===at?"on":i<at?"done":"")+'" style="--accent:'+D[type].c+'"><div class="dot">'+(i+1)+'</div><div><div class="eq">'+x.e+'</div><p>'+x.d+'</p></div></div>';
+});
+var n=s[at].n;
+h+='<div class="note '+(n?"show":"")+'" style="--accent:'+D[type].c+'">'+(n||"")+'</div>';
+h+='<div class="ctrl" style="--accent:'+D[type].c+'"><button id="prev"'+(at===0?" disabled":"")+'>Back</button><button class="primary" id="next">'+(at===s.length-1?"Restart":"Next step")+'</button></div>';
+box.innerHTML=h;
+document.getElementById("prev").onclick=function(){if(at>0){at--;draw();}};
+document.getElementById("next").onclick=function(){at=at===s.length-1?0:at+1;draw();};
+}
+document.querySelectorAll(".tabs button").forEach(function(b){
+b.onclick=function(){
+type=+b.dataset.t;at=0;
+document.querySelectorAll(".tabs button").forEach(function(o){o.setAttribute("aria-selected",o===b)});
+draw();
+};
+});
+draw();
+</script>
+</body>
+</html>
